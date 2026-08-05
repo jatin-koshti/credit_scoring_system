@@ -54,7 +54,21 @@ def run_model_training():
 def run_streamlit_app():
     print("[*] Launching Streamlit Web Dashboard...")
     app_path = os.path.join("app", "streamlit_app.py")
-    subprocess.run([sys.executable, "-m", "streamlit", "run", app_path])
+    
+    # Check if running in a cloud environment with a dynamic PORT (like Render)
+    port = os.environ.get("PORT")
+    if port:
+        print(f"[*] Cloud environment detected. Binding to port {port}...")
+        cmd = [
+            sys.executable, "-m", "streamlit", "run", app_path,
+            "--server.port", port,
+            "--server.address", "0.0.0.0",
+            "--server.headless", "true"
+        ]
+    else:
+        cmd = [sys.executable, "-m", "streamlit", "run", app_path]
+        
+    subprocess.run(cmd)
 
 def main():
     parser = argparse.ArgumentParser(description="Credit Scoring & Loan Risk Prediction CLI")
@@ -71,9 +85,15 @@ def main():
     elif args.app:
         run_streamlit_app()
     else:
-        # Default action if no flag passed
-        print("No command line argument specified. Running default model training pipeline...")
-        run_model_training()
+        # Default action: check if model exists, if not, train, then run Streamlit app
+        model_exists = os.path.exists(os.path.join("models", "best_model.joblib"))
+        preprocessor_exists = os.path.exists(os.path.join("models", "preprocessor.joblib"))
+        
+        if not model_exists or not preprocessor_exists:
+            print("[-] Model or preprocessor not found. Running training pipeline first...")
+            run_model_training()
+            
+        run_streamlit_app()
 
 if __name__ == "__main__":
     main()

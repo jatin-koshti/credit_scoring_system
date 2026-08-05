@@ -3,7 +3,7 @@ services:
     name: credit-scoring-system
     env: python
     buildCommand: pip install -r requirements.txt && python run.py --train
-    startCommand: python -m streamlit run app/streamlit_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    startCommand: python run.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
