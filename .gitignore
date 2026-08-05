@@ -1,0 +1,26 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Model artifacts & Large outputs
+models/*.joblib
+reports/*.png
+reports/*.csv
+data/raw/*.csv
+data/processed/*.csv
+
+# Streamlit / IDE
+.streamlit/
+.vscode/
+.idea/
+*.log
